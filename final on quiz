@@ -1,0 +1,140 @@
+import 'package:doingit/quizbrain.dart';
+import 'package:flutter/material.dart';
+
+QuizBrain quizBrain = QuizBrain();
+void main() => runApp(
+      const QuizApp(),
+    );
+
+class QuizApp extends StatelessWidget {
+  const QuizApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        appBar: AppBar(
+          backgroundColor: Colors.blue,
+          title: const Text(
+            'The Quiz',
+            style: TextStyle(
+              color: Colors.limeAccent,
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        body: QuizPage(),
+      ),
+    );
+  }
+}
+
+class QuizPage extends StatefulWidget {
+  const QuizPage({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    return _QuizPageState();
+  }
+}
+
+class _QuizPageState extends State<QuizPage> {
+  List<Icon> storeKeeper = [];
+
+  void nextQuestion(int getNextQst) {
+    bool correctAnswer = quizBrain.getQsA();
+    // ignore: unrelated_type_equality_checks
+    setState(() {
+      if (correctAnswer == getNextQst) {
+        storeKeeper.add(Icon(Icons.check));
+      } else {
+        storeKeeper.add(Icon(Icons.close));
+      }
+
+      quizBrain.correctQuestion();
+    });
+  }
+
+  @override
+  Widget build(BuildContext Context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          flex: 5,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            child: Center(
+              child: Text(
+                quizBrain.getQsT(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    decoration: TextDecoration.none,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Center(
+                child: FlatButton(
+                  child: const Text(
+                    'True',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Colors.green),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      nextQuestion();
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Card(
+            color: Colors.white,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: Center(
+                child: FlatButton(
+                  child: const Text(
+                    'False',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        decoration: TextDecoration.none,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0,
+                        color: Colors.red),
+                  ),
+                  onPressed: () {
+                    bool correctAnswer = quizBrain.getQsA();
+
+                    setState(() {
+                      nextQuestion();
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
